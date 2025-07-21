@@ -28,6 +28,7 @@ public class Room extends BaseEntity{
         this.roomNm = roomFormDto.getRoomNm();
         this.price =roomFormDto.getPrice();
         this.size = roomFormDto.getSize();
+        this.roomType = roomFormDto.getRoomType();
         this.roomDetail = roomFormDto.getRoomDetail();
         this.totalCount = roomFormDto.getTotalCount();
         this.roomSellStatus = roomFormDto.getRoomSellStatus();

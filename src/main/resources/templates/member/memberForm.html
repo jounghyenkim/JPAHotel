@@ -119,7 +119,6 @@
                 <td colspan="2">
                     <input type="text" th:field="*{email}" name="email" id="memberId" size="30" placeholder="아이디" />
 
-                <td align="left"><input type="button" value="중복확인 " onclick="checkId()" style="margin-left:20px; margin-top:0px; margin-bottom:0px;" id="btn"/></td>
                     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="fieldError">Incorrect date</p>
                 </td>
             </tr>

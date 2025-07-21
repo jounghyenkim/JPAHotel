@@ -18,7 +18,7 @@
             var searchBy = $("#searchBy").val();
             var searchQuery = $("#searchQuery").val();
 
-            location.href="/admin/items/" + page + "?searchDateType=" + searchDateType
+            location.href="/admin/rooms/" + page + "?searchDateType=" + searchDateType
             + "&searchSellStatus=" + searchSellStatus + "&searchBy=" + searchBy
             + "&searchQuery=" + searchQuery;
         }
@@ -65,9 +65,9 @@
 </th:block>
 
 <div layout:fragment="content" style="margin-top: 100px;">
-    <form th:action="@{'/admin/items/'+${items.number}}" role="form" method="get" th:object="${items}">
+    <form th:action="@{'/admin/rooms/'+${rooms.number}}" role="form" method="get" th:object="${rooms}">
         <table class="table">
-            <div class="d-flex justify-content-center" th:object="${itemSearchDto}">
+            <div class="d-flex justify-content-center" th:object="${reservationDto}">
                 <select th:field="*{searchDateType}" class="form-control" style="width:auto;">
                     <option value="all">전체기간</option>
                     <option value="1d">1일</option>
@@ -75,7 +75,7 @@
                     <option value="1m">1개월</option>
                     <option value="6m">6개월</option>
                 </select>
-                <select th:field="*{searchSellStatus}" class="form-control" style="width:auto;">
+                <select th:field="*{roomSellStatus}" class="form-control" style="width:auto;">
                     <option value="">판매상태(전체)</option>
                     <option value="SELL">판매</option>
                     <option value="SOLD_OUT">품절</option>
@@ -97,14 +97,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="item, status : ${items.getContent()}">
-                <td th:text="${item.id}"></td>
+            <tr th:each="room, status : ${rooms.getContent()}">
+                <td th:text="${room.id}"></td>
                 <td>
-                    <a th:href="'/admin/item/'+${item.id}" th:text="${item.itemNm}"></a>
+                    <a th:href="'/admin/room/'+${room.id}" th:text="${room.roomNm}"></a>
                 </td>
-                <td th:text="${item.itemSellStatus == T(com.shop.constant.ItemSellStatus).SELL} ? '판매중' : '품절'"></td>
-                <td th:text="${item.createdBy}"></td>
-                <td th:text="${item.regTime}"></td>
+                <td th:text="${room.roomSellStatus == T(com.project.jpaHotel.constant.RoomSellStatus).SELL} ? '판매중' : '품절'"></td>
+                <td th:text="${room.createdBy}"></td>
+                <td th:text="${room.regTime}"></td>
             </tr>
             </tbody>
         </table>
@@ -113,23 +113,23 @@
 
 
     </form>
-    <div th:with="start=${(items.number/maxPage)*maxPage +1},
-        end=(${(items.totalPages == 0) ?
-        1 : (start + (maxPage-1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})">
+    <div th:with="start=${(rooms.number/maxPage)*maxPage +1},
+        end=(${(rooms.totalPages == 0) ?
+        1 : (start + (maxPage-1) < rooms.totalPages ? start + (maxPage - 1) : rooms.totalPages)})">
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${items.first}?'disabled'">
-                <a th:onclick="'javascript:page('+${items.number - 1} + ')'" aria-label='Previous'
+            <li class="page-item" th:classappend="${rooms.first}?'disabled'">
+                <a th:onclick="'javascript:page('+${rooms.number - 1} + ')'" aria-label='Previous'
                    class="page-link">
                     <span aria-hidden="true">Previous</span>
                 </a>
             </li>
             <li class="page-item" th:each="page: ${#numbers.sequence(start,end)}"
-                th:classappend="${items.number eq page-1}?'active':''">
+                th:classappend="${rooms.number eq page-1}?'active':''">
                 <a th:onclick="'javascript:page('+${page -1} + ')'" th:inline="text"
                    class="page-link">[[${page}]]</a>
             </li>
-            <li class="page-item" th:classappend="${items.last}?'disabled'">
-                <a th:onclick="'javascript:page(' + ${items.number + 1} + ')'" aria-label="Next"
+            <li class="page-item" th:classappend="${rooms.last}?'disabled'">
+                <a th:onclick="'javascript:page(' + ${rooms.number + 1} + ')'" aria-label="Next"
                    class="page-link">
                     <span aria-hidden="true">Next</span>
                 </a>

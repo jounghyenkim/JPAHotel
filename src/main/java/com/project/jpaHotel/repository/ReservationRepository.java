@@ -2,19 +2,28 @@ package com.project.jpaHotel.repository;
 
 import com.project.jpaHotel.domain.Reservation;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
-public class ReservationRepository {
-    private final EntityManager em;
 
+public class ReservationRepository extends ReservationCustomImpl{
+    @PersistenceContext
+    private EntityManager em;
+
+    public ReservationRepository(EntityManager em) {
+        super(em);
+        this.em =em;
+    }
+    @Transactional
     public void save(Reservation reservation){
         em.persist(reservation);
     }
+
 
     public Reservation findOne(Long id){
         return em.find(Reservation.class,id);

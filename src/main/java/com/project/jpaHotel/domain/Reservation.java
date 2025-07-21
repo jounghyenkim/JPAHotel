@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
-public class Reservation{
+public class Reservation extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "reservation_id")

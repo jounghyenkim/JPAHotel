@@ -109,14 +109,14 @@
             function addCart(){
                 var token = $("meta[name='_csrf']").attr("content");
                 var header = $("meta[name='_csrf_header']").attr("content");
-                var itemId  = $("#itemId").val();
+                var roomId  = $("#roomId").val();
                 var searchCount  = $("#searchCount").val();
                 var searchCheckOut  = $("#searchCheckOut").val();
                 var searchCheckIn  = $("#searchCheckIn").val();
                 var url = "/cart";
 
                 var paramData = {
-                    itemId : $("#itemId").val(),
+                    roomId : $("#roomId").val(),
                     searchCheckOut : $("#searchCheckOut").val(),
                     searchCheckIn : $("#searchCheckIn").val(),
                     searchPrice : $("#totalPrice").val(),
@@ -129,14 +129,12 @@
 
                 var param = JSON.stringify(paramData);
 
-                alert(searchCount);
-
                 $.ajax({
                     url : url,
                     type : "POST",
                     contentType : "application/json",
                     data : JSON.stringify({
-                     itemId : $("#itemId").val(),
+                     roomId : $("#roomId").val(),
                     searchCheckOut : $("#searchCheckOut").val(),
                     searchCheckIn : $("#searchCheckIn").val(),
                     searchPrice : $("#totalPrice").val(),
@@ -188,10 +186,10 @@ $(function(){
 
         // 결제 정보를 form에 저장한다.
 
-            var itemId = $("#itemId").val();
+            var roomId = $("#roomId").val();
             var count = $("#count").val();
                  var paramData = {
-                    itemId : $("#itemId").val(),
+                    roomId : $("#roomId").val(),
                     searchCheckOut : $("#searchCheckOut").val(),
                     searchCheckIn : $("#searchCheckIn").val(),
                     searchPrice : $("#totalPrice").val(),
@@ -207,7 +205,7 @@ $(function(){
         // 카카오페이 결제전송
         $.ajax({
                 type:'get'
-                ,url:'/kakao/pay/' + itemId
+                ,url:'/kakao/pay/' + roomId
                 ,data: paramData,
              beforeSend : function(xhr){
                         /*데이터 전송하기 전에 헤더이 csrf 값을 설정*/
@@ -254,86 +252,86 @@ $(function(){
 
 <div layout:fragment="content" style="margin-left:25%;margin-right:25%">
     <input type="hidden" id="roomId" th:value="${roomId}">
-    &nbsp;&nbsp;&nbsp; <h1 size="20">객실예약</h1><br />
+
+    <h1>객실예약</h1><br />
+
     <table align="center">
-        <tr id="list1">
-            <td id="step3">날짜,인원 선택</td>
+        <tr>
+            <td id="step3">날짜, 인원 선택</td>
             <td id="step1">객실 및 옵션 선택</td>
         </tr>
     </table>
 
-    <form  method="post" name="regForm" enctype="multipart/form-data">
-        <img th:src="${roomFormDto.roomImgDtoList[0].imgUrl}" width="300" height="250">
-            <table  align="center" class="reserveResult" th:object="${reservationDto}">
-                <input type="hidden" th:value="${firstPrice}" id="firstPrice">
-                <input type="hidden" th:value="${days}" id="days">
-            <tr height="15%">
-                <th colspan="4" align="center"><font size="5">예약정보</font></th>
-            </tr>
-            <tr id="line" >
-                <td align="center" id="line"></td>
-                        <tr align="left">
-                            <td>
-                                예약 객실 : <b>[[${reservationDto.searchRoomType}]]</b>
-                                <input type="hidden"  th:field="*{searchRoomType}" />
-                                <input type="hidden" id="searchRoomType" th:value="${reservationDto.searchRoomType}" />
-                            </td>
-                            <td>
-                                체크인날짜 : <b>[[${reservationDto.searchCheckIn}]]</b>
-                                <input type="hidden"   th:field="*{searchCheckIn}" />
-                                <input type="hidden" id="searchCheckIn"  th:value="${reservationDto.searchCheckIn}" />
-                            </td>
-                        </tr>
-                        <tr align="left">
-                            <td>체크아웃 날짜 : <b>[[${reservationDto.searchCheckOut}]]</b>
-                                <input type="hidden"  th:field="*{searchCheckOut}" />
-                                <input type="hidden" id="searchCheckOut"  th:value="${reservationDto.searchCheckOut}" />
-                            </td>
-                            <td>
-                                성인 투숙객 수 : <b>[[${reservationDto.searchAdultCount}]]</b>명
-                                <input type="hidden" th:field="*{searchAdultCount}" />
-                                <input type="hidden" id="searchAdultCount"  th:value="${reservationDto.searchAdultCount}" />
-                            </td>
-                        </tr>
+    <form method="post" name="regForm" enctype="multipart/form-data">
+        <img th:src="${roomFormDto.roomImgDtoList[0].imgUrl}" width="300" height="250" />
 
-                        <tr align="left">
-                            <td>아동 투숙객 수 : <b>[[${reservationDto.searchChildrenCount}]]</b>명
-                                <input type="hidden"  th:field="*{searchChildrenCount}" />
-                                <input type="hidden" id="searchChildrenCount"  th:value="${reservationDto.searchChildrenCount}" />
-                            </td>
-                            <td>
-                                총 금액 : <input type="text" name="r_price"  readonly="readonly"
-                                id="totalPrice"  th:value="${reservationDto.searchPrice}"/>원
-                                <input type="hidden"  th:field="*{searchPrice}"/>
-                            </td>
-                        </tr>
-
+        <table align="center" class="reserveResult" th:object="${reservationDto}">
+            <input type="hidden" id="firstPrice" th:value="${firstPrice}" />
+            <input type="hidden" id="days" th:value="${days}" />
 
             <tr>
-                <td colspan="4" align="center" style="font-weight:bold;" height="15%"><font size="5">옵션선택</font></td>
+                <th colspan="4" align="center"><font size="5">예약정보</font></th>
             </tr>
-            <tr id="line">
-                <td colspan="4" align="center" id="line">
-                    조식 인원 수 (1인당 20,000원) :
-                    <input type="text" name="breakfast" style="background-color:#e7eaed; text-align:center;"  id="searchBreakfast" th:value="${reservationDto.searchBreakfast}">&nbsp;&nbsp;
-                    <button type ="button" onclick="fnCalCount('p',this);">+</button>
-                    <button type ="button" onclick="fnCalCount('m',this);">-</button>
-                   </br>
-                    객실 개수
-                    <input type="hidden" name="searchCount" style="background-color:#e7eaed; text-align:center;" id="count" th:field="*{searchBreakfast}"/>&nbsp;
-                    <input type="text" name="searchCount"  id="searchCount" th:value="${reservationDto.searchCount}">&nbsp;
-                    <button type ="button" onclick="fnCalCounts('ps',this);">+</button>
-                    <button type ="button" onclick="fnCalCounts('ms',this);">-</button>
-                    <br>
-                    <input type="button" id="btns" onclick="addCart()"
-                           value="장바구니 담기"   style="height:50px;">
-                    <input type="button" value="카카오페이 결제"  id="btn-kakao-pay"/>
-                    <input type="button" value="예약하기" onclick="order()"/>
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <tr>
+                <td colspan="4">
+                    <div>
+                        예약 객실 : <b>[[*{searchRoomType}]]</b>
+                        <input type="hidden" th:field="*{searchRoomType}" />
+                    </div>
+                    <div>
+                        체크인 날짜 : <b>[[*{searchCheckIn}]]</b>
+                        <input type="hidden" th:field="*{searchCheckIn}" />
+                    </div>
+                    <div>
+                        체크아웃 날짜 : <b>[[*{searchCheckOut}]]</b>
+                        <input type="hidden" th:field="*{searchCheckOut}" />
+                    </div>
+                    <div>
+                        성인 투숙객 수 : <b>[[*{searchAdultCount}]]</b>명
+                        <input type="hidden" th:field="*{searchAdultCount}" />
+                    </div>
+                    <div>
+                        아동 투숙객 수 : <b>[[*{searchChildrenCount}]]</b>명
+                        <input type="hidden" th:field="*{searchChildrenCount}" />
+                    </div>
+                    <div>
+                        총 금액 :
+                        <input type="text" name="r_price" readonly id="totalPrice" th:value="*{searchPrice}" />원
+                        <input type="hidden" th:field="*{searchPrice}" />
+                    </div>
                 </td>
             </tr>
 
-            </table>
+            <tr>
+                <td colspan="4" align="center" style="font-weight:bold;"><font size="5">옵션선택</font></td>
+            </tr>
+
+            <tr>
+                <td colspan="4" align="center">
+                    <div>
+                        조식 인원 수 (1인당 20,000원):
+                        <input type="text" name="breakfast" id="searchBreakfast" th:value="*{searchBreakfast}" style="background-color:#e7eaed; text-align:center;" />
+                        <button type="button" onclick="fnCalCount('p',this);">+</button>
+                        <button type="button" onclick="fnCalCount('m',this);">-</button>
+                    </div>
+                    <br />
+                    <div>
+                        객실 개수:
+                        <input type="text" name="searchCount" id="searchCount" th:value="*{searchCount}" style="background-color:#e7eaed; text-align:center;" />
+                        <button type="button" onclick="fnCalCounts('ps',this);">+</button>
+                        <button type="button" onclick="fnCalCounts('ms',this);">-</button>
+                    </div>
+                    <br />
+                    <div style="margin-top: 20px; text-align: center;">
+                        <input type="button" id="btns" onclick="addCart()" value="장바구니 담기" class="action-btn" />
+                        <input type="button" id="btn-kakao-pay" value="카카오페이 결제" class="action-btn kakao" />
+                        <input type="button" value="예약하기" onclick="order()" class="action-btn reserve" />
+                    </div>
+                </td>
+            </tr>
+        </table>
     </form>
 </div>
+
 </html>

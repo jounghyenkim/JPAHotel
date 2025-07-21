@@ -10,6 +10,7 @@ import com.project.jpaHotel.dto.RoomImgDto;
 import com.project.jpaHotel.repository.RoomImgRepository;
 import com.project.jpaHotel.repository.RoomRepository;
 import com.project.jpaHotel.repository.RoomRepositoryCustomImpl;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,17 +53,20 @@ public class RoomService {
     }
 
     public RoomFormDto getRoomDtl(Long roomId){
-        List<RoomImg> roomImgList =roomImgRepository.findRoomImgsByRoomReservationIdAsc(roomId);
+        List<RoomImg> roomImgList = roomImgRepository.findRoomImgsByRoomReservationIdAsc(roomId);
 
-        List<RoomImgDto> roomImgDtoList =new ArrayList<>();
+        List<RoomImgDto> roomImgDtoList = roomImgList.stream()
+                .map(RoomImgDto::of)
+                .toList();
 
-        for (RoomImg roomImg : roomImgList) {
-            RoomImgDto roomImgDto = RoomImgDto.of(roomImg);
-            roomImgDtoList.add(roomImgDto);
-        }
+        // 변경된 부분
         Room room = roomRepository.findOne(roomId);
-        // Room -> RoomFormDto modelMapper
+        if (room == null) {
+            throw new EntityNotFoundException("해당 ID의 객실이 존재하지 않습니다. id=" + roomId);
+        }
+        System.out.println("room = " + room.getRoomNm());
         RoomFormDto roomFormDto = RoomFormDto.of(room);
+
         roomFormDto.setRoomImgDtoList(roomImgDtoList);
         return roomFormDto;
     }

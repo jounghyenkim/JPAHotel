@@ -19,25 +19,23 @@ public class RoomImgService {
     private final FileService fileService;
 
 
-    public void saveRoomImg(RoomImg roomImg, MultipartFile roomImgFile) throws  Exception{
+    public void saveRoomImg(RoomImg roomImg, MultipartFile roomImgFile) throws  Exception {
         String oriImgName = roomImgFile.getOriginalFilename();
-        String imaName= "";
-        String imgUrl ="";
-        System.out.println(oriImgName);
-        //파일 업로드
-        if (!StringUtils.isEmpty(oriImgName)){// oriImgName 문자열로 비어있지 않으면 실행
-            imaName =fileService.uploadFile(roomImgLocation,oriImgName,
-                    roomImgFile.getBytes());
-            System.out.println("imaName = " + imaName);
+        String imgName = "";
+        String imgUrl = "";
 
+        if (!StringUtils.isEmpty(oriImgName)) {
+            imgName = fileService.uploadFile(roomImgLocation, oriImgName, roomImgFile.getBytes());
+            imgUrl = "/images/room/" + imgName;  // 이 줄이 반드시 있어야 함
         }
         // 객실 이미지 정보 저장
         // oriImgName : 객실 이미지 파일의 원래 이름
         // imgName : 실제 로컬에 저장된 상품의 이미지 파일의 이름
         // imgUrl : 로컬에 저장된 상품 이미지 파일을 불러오는 경로
-        roomImg.updateRoomImg(oriImgName,imaName,imgUrl);
+        roomImg.updateRoomImg(oriImgName, imgName, imgUrl);
         roomImgRepository.save(roomImg);
     }
+
 
     public void updateRoomImg(Long roomImgId, MultipartFile roomImgFile) throws  Exception{
         if (!roomImgFile.isEmpty()){ // 객실 이미지를 수정한 경우 객실 이미지 업데이트

@@ -1,6 +1,7 @@
 package com.project.jpaHotel.service;
 
 import com.project.jpaHotel.domain.Member;
+import com.project.jpaHotel.dto.MemberASDto;
 import com.project.jpaHotel.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -90,5 +91,17 @@ public class MemberService implements UserDetailsService {
             }
         }
         return null;
+    }
+    public Member findMember(HttpSession httpSession, Principal principal) {
+        String email = loadMemberEmail(principal, httpSession);
+        List<Member> members =memberRepository.findByEmail(email);
+        Member member = members.get(0);
+        return member;
+    }
+    public void memberAS(MemberASDto memberASDto) {
+        List<Member> members = memberRepository.findByEmail(memberASDto.getEmail());
+        Member member = members.get(0);
+        member = member.MemberAS(memberASDto);
+        memberRepository.save(member);
     }
 }

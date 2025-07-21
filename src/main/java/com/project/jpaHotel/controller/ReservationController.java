@@ -43,14 +43,16 @@ public class ReservationController {
         }
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5);
         Page<MainRoomDto> rooms = roomService.getMainRoomPages(reservationDto, pageable);
+        String name = memberService.loadMemberName(principal,httpSession);
 
+        model.addAttribute("name",name);
         model.addAttribute("reservationDto",reservationDto);
         model.addAttribute("rooms",rooms);
         model.addAttribute("maxPage",5);
         return "/reservation/reservation1";
     }
     @GetMapping(value = "/reservation2/{roomId}")
-    public String reservation3(@PathVariable("roomId")Long roomId,ReservationDto reservationDto, Optional<Integer> page, Model model,
+    public String Reservation2(@PathVariable("roomId")Long roomId,ReservationDto reservationDto, Optional<Integer> page, Model model,
                                Principal principal,HttpSession httpSession){
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5);
         if(reservationDto.getSearchQuery() == null)
@@ -60,6 +62,7 @@ public class ReservationController {
         String name = memberService.loadMemberName(principal,httpSession);
         RoomFormDto roomFormDto = roomService.getRoomDtl(roomId);
         Page<MainRoomDto> rooms = roomService.getMainRoomPages(reservationDto, pageable);
+        httpSession.setAttribute("roomId",roomId);
 
         model.addAttribute("name",name);
         model.addAttribute("roomFormDto",roomFormDto);
@@ -70,7 +73,7 @@ public class ReservationController {
     }
     @PostMapping(value = "/reservationOk")
     public @ResponseBody
-    ResponseEntity order(@RequestBody ReservationDto reservationDto,
+    ResponseEntity reservation(@RequestBody ReservationDto reservationDto,
                          BindingResult bindingResult,
                          Principal principal, Reservation reservation, HttpSession httpSession, Room room) throws Exception {
 

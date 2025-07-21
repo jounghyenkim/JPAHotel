@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "room_img")
 @Getter @Setter
-public class RoomImg{
+public class RoomImg extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "room_img_id")

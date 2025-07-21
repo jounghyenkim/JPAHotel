@@ -3,6 +3,7 @@ package com.project.jpaHotel.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.jpaHotel.config.OAuthAttributes;
 import com.project.jpaHotel.constant.Role;
+import com.project.jpaHotel.dto.MemberASDto;
 import com.project.jpaHotel.dto.MemberFormDto;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Member {
+public class Member extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
@@ -59,5 +60,9 @@ public class Member {
         member.setPassword(password);
         return member;
     }
-
+    public Member MemberAS(MemberASDto memberASDto) {
+        this.address = memberASDto.getAddress();
+        this.tel = memberASDto.getTel();
+        return this;
+    }
 }

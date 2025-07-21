@@ -16,9 +16,9 @@
         function getOrderTotalPrice(){
             var orderTotalPrice = 0;
             $("input[name=cartChkBox]:checked").each(function(){
-                var itemId = $(this).val();
-                var price = $("#price_" + itemId).attr("data-price");
-                var count = $("#count_" + itemId).val();
+                var roomId = $(this).val();
+                var price = $("#price_" + roomId).attr("data-price");
+                var count = $("#count_" + roomId).val();
                 orderTotalPrice += price * count;
             });
 
@@ -26,12 +26,12 @@
         }
         function changeCount(obj){
             var count = obj.value;
-            var itemId = obj.id.split('_')[1];
-            var price = $("#price_"+itemId).data("price");
+            var roomId = obj.id.split('_')[1];
+            var price = $("#price_"+roomId).data("price");
             var totalPrice = count * price;
-            $("#totalPrice_" + itemId).html(totalPrice+"원");
+            $("#totalPrice_" + roomId).html(totalPrice+"원");
             getOrderTotalPrice();
-            updateCartItemCount(itemId, count);
+            updateCartItemCount(roomId, count);
         }
         function checkAll(){
             if($("#checkall").prop("checked")){
@@ -42,11 +42,11 @@
             }
             getOrderTotalPrice();
         }
-        function updateCartItemCount(itemId, count){
+        function updateCartItemCount(roomId, count){
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
-            var url = "/cartItem/" + itemId + "?count=" + count;
+            var url = "/cartRoom/" + roomId + "?count=" + count;
 
             $.ajax({
                 url : url,
@@ -57,7 +57,7 @@
                 dataType : "json",
                 cache : false,
                 success : function(result, status){
-                    console.log("cartItem count update success");
+                    console.log("cartRoom count update success");
                 },
                 error : function(jqXHR, status, error){
                     if(jqXHR.status == '401'){
@@ -70,11 +70,11 @@
             });
         }
          function deleteCartItem(obj){
-                var itemId = obj.dataset.id;
+                var roomId = obj.dataset.id;
                 var token = $("meta[name='_csrf']").attr("content");
                 var header = $("meta[name='_csrf_header']").attr("content");
 
-                var url = "/cartItem/" + itemId;
+                var url = "/cartRoom/" + roomId;
 
                 $.ajax({
                     url : url,
@@ -97,23 +97,23 @@
                     }
                 });
             }
-        function orders(){
+        function reservations(){
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
-            var url = "/cart/orders";
+            var url = "/cart/reservations";
 
             var dataList = new Array();
             var paramData = new Object();
 
             $("input[name=cartChkBox]:checked").each(function(){
-                var itemId = $(this).val();
+                var cartRoomId = $(this).val();
                 var data = new Object();
-                data["cartItemId"] = cartItemId;
+                data["cartRoomId"] = cartRoomId;
                 dataList.push(data);
             });
 
-            paramData['cartOrderDtoList'] = dataList;
+            paramData['cartReservationDtoList'] = dataList;
              var param = JSON.stringify(paramData);
 
             $.ajax({
@@ -128,8 +128,8 @@
                 dataType : "json",
                 cache : false,
                 success : function(result, status){
-                    alert("주문이 완료 되었습니다.");
-                    location.href='/orders';
+                    alert("예약이 완료 되었습니다.");
+                    location.href='/cart';
                 },
                 error : function(jqXHR, status, error){
                     if(jqXHR.status == '401'){
@@ -164,9 +164,9 @@ $(function(){
 
         // 결제 정보를 form에 저장한다.
 
-            var itemId = $("#itemId").val();
+            var roomId = $("#roomId").val();
                 var paramData = {
-                    itemId : $("#itemId").val(),
+                    roomId : $("#roomId").val(),
                     searchCheckOut : $("#searchCheckOut").val(),
                     searchCheckIn : $("#searchCheckIn").val(),
                     searchCount : $("#count").val(),
@@ -176,9 +176,9 @@ $(function(){
         // 카카오페이 결제전송
         $.ajax({
                 type:'get'
-                ,url:'/kakao/pay/' + itemId
+                ,url:'/kakao/pay/' + roomId
                 ,data:{
-                   itemId : itemId,
+                   roomId : roomId,
                     searchCheckOut : $("#searchCheckOut").val(),
                     searchCheckIn : $("#searchCheckIn").val(),
                     searchPrice : $("#price").val(),
@@ -239,7 +239,7 @@ $(function(){
         <h2>장바구니 목록</h2>
     </div>
     <div>
-        <table class="table" th:each="cartItem : ${cartItem}" th:object="${itemSearchDto}">
+        <table class="table" th:each="cartRoom : ${cartRoom}" th:object="${reservationDto}">
             <colgroup>
                 <col width="15%">
                 <col width="70%">
@@ -248,7 +248,7 @@ $(function(){
             <thead>
             <tr class="text-center">
                 <td>
-                    <input type="checkbox" id="checkall" onclick="checkAll()" th:value="${cartItem.item.id}"> 전체선택
+                    <input type="checkbox" id="checkall" onclick="checkAll()" th:value="${cartRoom.room.id}"> 전체선택
                 </td>
                 <td>상품정보</td>
                 <td>상품금액</td>
@@ -257,7 +257,7 @@ $(function(){
             <tbody>
             <tr>
                 <td class="text-center align-middle">
-                    <input type="checkbox" name="cartChkBox" id="itemId" th:value="${cartItem.item.id}">
+                    <input type="checkbox" name="cartChkBox" id="roomId" th:value="${cartRoom.room.id}">
                 </td>
                 <td class="d-flex">
                     <div class="repImgDiv align-self-center">
@@ -273,39 +273,39 @@ $(function(){
 
                         <div class="fs18 font-weight-light">
                                     <span class="input-group mt-2">
-                                        <span th:id="'price_' + ${cartItem.item.id}" th:data-price="${cartItem.price}"
-                                              th:text="${cartItem.price} + '원'" class="align-self-center mr-2"></span>
+                                        <span th:id="'price_' + ${cartRoom.room.id}" th:data-price="${cartRoom.price}"
+                                              th:text="${cartRoom.price} + '원'" class="align-self-center mr-2"></span>
                                               <input type="hidden"  th:field="*{searchPrice}" />
 
 
-                                        <input type="hidden" id="price" th:value="${cartItem.price * cartItem.count}" />
-                                        <input type="number" name="count" id="count" th:id="'count_' + ${cartItem.item.id}"
-                                               th:value="${cartItem.count}" min="1" onchange="changeCount(this)"
+                                        <input type="hidden" id="price" th:value="${cartRoom.price * cartRoom.count}" />
+                                        <input type="number" name="count" id="count" th:id="'count_' + ${cartRoom.room.id}"
+                                               th:value="${cartRoom.count}" min="1" onchange="changeCount(this)"
                                                style="margin-left:10px;">
                                             <input type="hidden"  th:field="*{searchCount}" />
                                         <br />
                                         <div>
                                          <input type="date" name="searchCheckIn" id="searchCheckIn"
-                                                th:value="${cartItem.checkIn}" style="margin-left:10px; width:200px;" />
+                                                th:value="${cartRoom.checkIn}" style="margin-left:10px; width:200px;" />
 
                                         <input type="hidden"  th:field="*{searchCheckIn}"/>
                                            <input type="date"  id="searchCheckOut"
-                                                  th:value="${cartItem.checkOut}" style="margin-left:10px  width:200px;" />
+                                                  th:value="${cartRoom.checkOut}" style="margin-left:10px  width:200px;" />
                                         <input type="hidden"  th:field="*{searchCheckOut}"/>
 
                                             </div>
                                         <div style="margin-top:10px;">
                                          <input type="number"  id="searchAdultCount"
-                                                th:field="*{searchAdultCount}"  min="1" th:value="${cartItem.adultCount}" style="margin-left:10px  width:100;"/>
+                                                th:field="*{searchAdultCount}"  min="1" th:value="${cartRoom.adultCount}" style="margin-left:10px  width:100;"/>
                                             <span>명</span>
 
                                             <input type="number"  id="searchChildrenCount"
-                                                   th:field="*{searchChildrenCount}"  min="1" th:value="${cartItem.childrenCount}" style="margin-left:10px  width:100;"/>
+                                                   th:field="*{searchChildrenCount}"  min="1" th:value="${cartRoom.childrenCount}" style="margin-left:10px  width:100;"/>
                                             <span>명</span>
                                         </div>
                                         <div>
                                           <button type="button" class="close" aria-label="Close" style="background-color:black;"
-                                                  th:data-id="${cartItem.item.id}"  onclick="deleteCartItem(this)">
+                                                  th:data-id="${cartRoom.room.id}"  onclick="deleteCartItem(this)">
                                         </button>
 
                                     </div>
@@ -314,8 +314,8 @@ $(function(){
                     </div>
                 </td>
                 <td class="text-center align-middle">
-                            <input type="text" th:id="'totalPrice_'+${cartItem.item.id}" name="totalPrice" id="totalPrice"
-                                  th:value="${cartItem.price * cartItem.count} + '원'" />
+                    <input type="text" th:id="'totalPrice_'+${cartRoom.room.id}" name="totalPrice" id="totalPrice"
+                           th:value="${cartRoom.price * cartRoom.count} + '원'" />
                 </td>
             </tr>
             </tbody>
@@ -324,7 +324,8 @@ $(function(){
             총 주문 금액 : <span id="orderTotalPrice" style="color:#770000;">0원</span>
         </h4>
         <div class="text-center mt-3">
-            <button type="button" class="btn btn-success btn-lg" id="btn-kakao-pay">주문하기</button>
+            <button type="button" class="btn btn-success btn-lg" id="btn-kakao-pay">카카오페이</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="reservations()">예약하기</button>
         </div>
     </div>
 </div>

@@ -3,6 +3,7 @@ package com.project.jpaHotel.dto;
 import com.project.jpaHotel.constant.ReservationStatus;
 import com.project.jpaHotel.constant.RoomSellStatus;
 import com.project.jpaHotel.constant.RoomType;
+import com.project.jpaHotel.domain.CartRoom;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +32,20 @@ public class ReservationDto {
     private int searchChildrenCount ;
     private int searchPrice ;
     private ReservationStatus reservationStatus;
+
+    public static ReservationDto reservationDto(CartRoom cartRoom){
+        ReservationDto reservationDto =new ReservationDto();
+        reservationDto.setRoomId(cartRoom.getRoom().getId());
+        reservationDto.setSearchCount(cartRoom.getCount());
+        reservationDto.setSearchRoomType(RoomType.valueOf(cartRoom.getType()));
+        reservationDto.setSearchCheckIn(cartRoom.getCheckIn());
+        reservationDto.setSearchCheckOut(cartRoom.getCheckOut());
+        reservationDto.setSearchAdultCount(cartRoom.getAdultCount());
+        reservationDto.setSearchBreakfast(cartRoom.getBreakfast());
+        reservationDto.setSearchChildrenCount(cartRoom.getChildrenCount());
+        reservationDto.setSearchPrice(cartRoom.getPrice());
+
+        return reservationDto;
+    }
+
 }

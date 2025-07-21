@@ -7,7 +7,7 @@ import org.checkerframework.checker.units.qual.C;
 
 @Entity
 @Getter @Setter
-public class ReservationRoom{
+public class ReservationRoom extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "reservation_room_id")
@@ -30,7 +30,7 @@ public class ReservationRoom{
         reservationRoom.setRoom(room);
         reservationRoom.setCount(count);
         reservationRoom.setReservationPrice(room.getPrice());
-
+        room.removeStock(count);
         return reservationRoom;
     }
 }

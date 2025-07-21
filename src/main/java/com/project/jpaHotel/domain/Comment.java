@@ -30,5 +30,17 @@ public class Comment extends BaseTimeEntity{
 
     @OneToMany(mappedBy = "parent",cascade = CascadeType.ALL)
     private List<Comment> comments =new ArrayList<>();
+    public Comment(){};
 
+    public Comment (Board board, Member member, String content, Comment parent) {
+        this.board = board;
+        this.member = member;
+        this.content = content;
+        this.parent = parent;
+    }
+
+    public Long updateComment (String content) {
+        this.content = content;
+        return this.board.getId();
+    }
 }
