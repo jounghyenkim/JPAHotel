@@ -135,7 +135,7 @@
 
     <!-- 💡 검색 결과가 있는 경우 -->
     <div th:if="${reservationDto.searchCheckIn != null and reservationDto.searchCheckOut != null and reservationDto.searchAdultCount != null and reservationDto.searchChildrenCount != null and rooms != null and rooms.totalElements > 0}" style="margin-top: 2rem;">
-        <div th:each="room : ${rooms.content}" style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
+        <div th:each="room ,status: ${rooms.getContent()}" style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
             <img th:src="${room.imgUrl}" width="300" height="250" alt="객실 이미지" />
             <h3>[[${room.type}]]</h3>
             <p>객실 크기: [[${room.size}]]㎡</p>
